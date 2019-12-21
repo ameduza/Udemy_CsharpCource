@@ -6,6 +6,11 @@ namespace Section05_OOP
     {
         static void Main(string[] args)
         {
+            CallMyStack();
+
+
+            #region Structs and references
+            /*
             Console.WriteLine("Struct types:");
             PointVal a; // same as PointVal a = new PointVal();
             a.X = 3;
@@ -32,7 +37,8 @@ namespace Section05_OOP
 
             c.LogValues();
             d.LogValues();
-
+            */
+            #endregion
 
             //Console.WriteLine("Enter ab, ac, alpha");
             //double ab = double.Parse(Console.ReadLine());
@@ -47,5 +53,24 @@ namespace Section05_OOP
 
         }
 
+        private static void CallMyStack()
+        {
+            var ms = new MyStack<int>();
+            for (int i = 0; i < 4; i++)
+            {
+                ms.Push(i * 10);
+            }
+            
+
+            ms.Peek();
+            ms.Pop();
+            ms.Peek();
+            Console.Clear();
+            Console.WriteLine("Popping all array");
+            for (int i = ms.Count; i > 0; i--)
+            {
+                ms.Pop();
+            }
+        }
     }
 }
