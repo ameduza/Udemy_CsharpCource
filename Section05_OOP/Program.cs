@@ -6,8 +6,10 @@ namespace Section05_OOP
     {
         static void Main(string[] args)
         {
-            CallMyStack();
-
+            //Console.WriteLine("MyStack:");
+            //CallMyStack();
+            Console.WriteLine("MyEnumStack:");
+            CallMyEnumStack();
 
             #region Structs and references
             /*
@@ -60,7 +62,7 @@ namespace Section05_OOP
             {
                 ms.Push(i * 10);
             }
-            
+
 
             ms.Peek();
             ms.Pop();
@@ -71,6 +73,31 @@ namespace Section05_OOP
             {
                 ms.Pop();
             }
+
+            Console.ReadLine();
+        }
+
+        public static void CallMyEnumStack()
+        {
+            var ms = new MyEnumStack<int>();
+            for (int i = 0; i < 9; i++)
+            {
+                ms.Push(i * 10);
+            }
+
+            ms.Peek();
+            ms.Pop();
+            ms.Peek();
+            Console.WriteLine("Press any key to pop all elements");
+            Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine("Popping all array");
+            foreach (var item in ms)
+            {
+                ms.Pop();
+            }
+
+            Console.ReadLine();
         }
     }
 }
