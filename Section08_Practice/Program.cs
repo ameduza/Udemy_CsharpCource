@@ -6,8 +6,16 @@ namespace Section08_Practice
     {
         static void Main(string[] args)
         {
-            GuessNumbersGame();
+            CrossAndZerosGame();            
+            //GuessNumbersGame();
             //ComplexNumbers()
+        }
+
+        public static void CrossAndZerosGame()
+        {
+            CrossAndZero game = new CrossAndZero();
+            game.StartGame();
+            
         }
 
         public static void GuessNumbersGame()
