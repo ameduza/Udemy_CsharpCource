@@ -11,6 +11,9 @@ namespace Section08_Practice
         private byte?[,] _field;
         private Player _winner;
         private bool _isGameOver;
+        private int _fieldRowLength;
+        private int _fieldColumnLength;
+
 
         public CrossAndZero()
         {
@@ -19,6 +22,9 @@ namespace Section08_Practice
             //_field = new byte?[3, 3] { { 0, null, null }, { 0, 1, 1 }, { 0, null, null } };
             //_field = new byte?[3, 3] { { 0, null, null }, { 1, 1, 1 }, { 0, null, null } };
             _field = new byte?[3, 3] { { 0, 1, null }, { 1, 0, 1 }, { 0, null, 0 } };
+
+            _fieldRowLength = _field.GetLength(0);
+            _fieldColumnLength = _field.GetLength(1);
         }
 
         public void StartGame()
@@ -48,11 +54,11 @@ namespace Section08_Practice
 
             string cell;
 
-            for (int i = 0; i < _field.GetLength(0); i++)
+            for (int row = 0; row < _fieldRowLength; row++)
             {
-                for (int j = 0; j < _field.GetLength(1); j++)
+                for (int col = 0; col < _fieldColumnLength; col++)
                 {
-                    switch (_field[i, j])
+                    switch (_field[row, col])
                     {
                         case 0:
                             cell = "O";
@@ -65,25 +71,21 @@ namespace Section08_Practice
                             break;
                     }
                     Console.Write($" {cell} ");
-                    if (j < 2)
+                    if (col < 2)
                         Console.Write("|");
                 }
                 Console.WriteLine();
             }
-
         }
 
         private void WinnerCalc()
         {
-            int fieldRowLength = _field.GetLength(0);
-            int fieldColumnLength = _field.GetLength(1);
-
             // Rows calc
-            for (int r = 0; r < fieldRowLength; r++)
+            for (int r = 0; r < _fieldRowLength; r++)
             {
-                byte?[] row = new byte?[fieldRowLength];
+                byte?[] row = new byte?[_fieldRowLength];
 
-                for (int c = 0; c < fieldColumnLength; c++)
+                for (int c = 0; c < _fieldColumnLength; c++)
                 {
                     row[c] = _field[r, c];
                 }
@@ -94,7 +96,7 @@ namespace Section08_Practice
                     rowSum += row[i];
                 }
 
-                if (rowSum == fieldRowLength)
+                if (rowSum == _fieldRowLength)
                 {
                     _winner = Player.Cross;
                     _isGameOver = true;
@@ -108,11 +110,11 @@ namespace Section08_Practice
                 }
             }
             // Columns calc
-            for (int r = 0; r < fieldRowLength; r++)
+            for (int r = 0; r < _fieldRowLength; r++)
             {
-                byte?[] column = new byte?[fieldRowLength];
+                byte?[] column = new byte?[_fieldRowLength];
 
-                for (int c = 0; c < fieldColumnLength; c++)
+                for (int c = 0; c < _fieldColumnLength; c++)
                 {
                     column[c] = _field[c, r];
                 }
@@ -123,7 +125,7 @@ namespace Section08_Practice
                     columnSum += column[i];
                 }
 
-                if (columnSum == fieldColumnLength)
+                if (columnSum == _fieldColumnLength)
                 {
                     _winner = Player.Cross;
                     _isGameOver = true;
@@ -139,10 +141,11 @@ namespace Section08_Practice
 
 
             // Diagonals calc 
+// TODO: implement universal logic
             var slashSum = _field[2, 0] + _field[1, 1] + _field[0, 2];
             var backSlashSum = _field[0, 0] + _field[1, 1] + _field[2, 2];
 
-            if (slashSum == fieldColumnLength || backSlashSum == fieldColumnLength)
+            if (slashSum == _fieldColumnLength || backSlashSum == _fieldColumnLength)
             {
                 _winner = Player.Cross;
                 _isGameOver = true;
