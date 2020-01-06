@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Section08_Practice
 {
@@ -6,11 +7,65 @@ namespace Section08_Practice
     {
         static void Main(string[] args)
         {
-            CrossAndZerosGame();            
+            HangmanGame();
+            //CrossAndZerosGame();
             //GuessNumbersGame();
             //ComplexNumbers()
         }
 
+        private static void HangmanGame()
+        {
+            Console.InputEncoding = Encoding.Unicode;
+            Console.OutputEncoding = Encoding.UTF8;
+            Hangman game = new Hangman();
+            HangmanGameDrawCurrentState(game);
+            while (game.Attempt > 0 && !game.IsUserGuessedWord)
+            {
+                Console.WriteLine("Введите следующую букву или слово целиком если готовы попробовать...");
+                try
+                {
+                    game.UserAttempt(Console.ReadLine());
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("Вы уже пробовали эту букву. Для продолжения нажмите любую клавишу...");
+                    Console.ReadKey();
+                }
+                    
+                HangmanGameDrawCurrentState(game);
+            }
+            
+            if (game.IsUserGuessedWord)
+            {
+                HangmanGameDrawCurrentState(game);
+                Console.WriteLine("Поздравляем! Угадали!");
+            }
+            else
+            {
+                string word = new string(game.CharsGuessed);
+                Console.WriteLine($"Извините, неверное слово. Было загадано слово: {word}");
+            }
+        }
+
+        private static void HangmanGameDrawCurrentState(Hangman game)
+        {
+
+            Console.Clear();
+
+            foreach (var c in game.CharsGuessed)
+            {
+                Console.Write($"{c} ");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine($"Количество попыток: {game.Attempt}");
+
+            if (game.CharsTriedList.Count > 0)
+            {
+                string list = new string(game.CharsTriedList.ToArray());
+                Console.WriteLine($"Использованные буквы: {list}");
+            }
+        }
         public static void CrossAndZerosGame()
         {
             CrossAndZero game = new CrossAndZero();
