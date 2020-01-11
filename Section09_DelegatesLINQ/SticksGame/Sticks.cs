@@ -14,17 +14,14 @@ namespace Section09_DelegatesLINQ.SticksGame
 
             InitialSticksNumber = initialSticksNumber;
             RemainingSticks = InitialSticksNumber;
-            GameStatus = GameStatusEnum.InProgress;
+            GameStatus = GameStatusEnum.NotStarted;
             CurrentPlayer = firstPlayer;
             _random = new Random();
         }
 
         public int InitialSticksNumber { get; }
-
         public PlayerEnum CurrentPlayer { get; private set; }
-
         public int RemainingSticks { get; private set; }
-
         public GameStatusEnum GameStatus { get; private set; }
 
         public event Action<int> ComputerPlayedEvent;
@@ -53,9 +50,20 @@ namespace Section09_DelegatesLINQ.SticksGame
 
                 FireEndOfGameIfRequired();
 
-                CurrentPlayer = CurrentPlayer == PlayerEnum.Computer ? PlayerEnum.Human : PlayerEnum.Human;
+                CurrentPlayer = CurrentPlayer == PlayerEnum.Computer ? PlayerEnum.Human : PlayerEnum.Computer;
             }
 
+        }
+
+        public void HumanTakes(int sticks) 
+        {
+            if (sticks < 1 || sticks > 3)
+                throw new ArgumentException("You can take from 1 to 3 sticks on a single move");
+
+            if (sticks > RemainingSticks)
+                throw new ArgumentException($"You can't take more than remaining. Currently there are {RemainingSticks} sticks vailable");
+
+            TakeSticks(sticks);
         }
 
         private void FireEndOfGameIfRequired()
@@ -64,7 +72,7 @@ namespace Section09_DelegatesLINQ.SticksGame
             {
                 GameStatus = GameStatusEnum.GameIsOver;
                 if (EndOfGameEvent != null)
-                    EndOfGameEvent(CurrentPlayer = CurrentPlayer == PlayerEnum.Computer ? PlayerEnum.Human : PlayerEnum.Human;);
+                    EndOfGameEvent(CurrentPlayer = CurrentPlayer == PlayerEnum.Computer ? PlayerEnum.Human : PlayerEnum.Computer);
             }
         }
 
@@ -76,10 +84,35 @@ namespace Section09_DelegatesLINQ.SticksGame
 
         private void ComputerMakesMove()
         {
-            int r = _random.Next(1, 3); 
-            int sticksNumber = RemainingSticks > 3 ? 3 : r;
+            int r = _random.Next(1, 3);
+            int sticksCount;
 
-            RemainingSticks -= sticksNumber;
+            switch (RemainingSticks)
+            {
+                case 3:
+                    sticksCount = 2;
+                    break;
+                case 2:
+                    sticksCount = 1;
+                    break;
+                case 1:
+                    sticksCount = 1;
+                    break;
+                default:
+                    sticksCount = r;
+                    break;
+            }
+            
+            TakeSticks(sticksCount);
+
+            if (ComputerPlayedEvent != null)
+                ComputerPlayedEvent(sticksCount);
+
+        }
+
+        private void TakeSticks(int sticksCount)
+        {
+            RemainingSticks -= sticksCount;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Section09_DelegatesLINQ.SticksGame;
+using System;
 
 namespace Section09_DelegatesLINQ
 {
@@ -7,10 +8,9 @@ namespace Section09_DelegatesLINQ
         static Car car;
         static void Main(string[] args)
         {
+            SticksGameUI.SticksGame();
 
-
-            CarCall();
-
+            //CarCall();
         }
 
         private static void CarCall()
