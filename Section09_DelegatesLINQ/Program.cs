@@ -23,18 +23,20 @@ namespace Section09_DelegatesLINQ
 
         static void Main(string[] args)
         {
-            LinqDemo(@"ChessPlayer\Top100ChessPlayers.csv");
+            PrintChessPlayers();
+
+            //LinqDemo(@"ChessPlayer\Top100ChessPlayers.csv");
 
             //DisplayLargestFilesLinq(@"C:\Distribs");
             //Console.WriteLine("--------------------");
             //DisplayLargestFilesNoLinq(@"C:\Distribs");
-            
+
             //SticksGameUI.SticksGame();
 
             //CarCall();
         }
 
-        private static void LinqDemo(string filepath) 
+        private static void LinqDemo(string filepath)
         {
             IEnumerable<ChessPlayer> players = File.ReadAllLines(filepath)
                                                 .Skip(1)
@@ -42,15 +44,36 @@ namespace Section09_DelegatesLINQ
                                                 .Where(x => x.BirthYear > 1988)
                                                 .Take(10)
                                                 .ToList();  // Greedy operator that kick off real calculation right now!
-            
-            Console.WriteLine($"The lowest rating in top 10 is {players.Min(x=>x.Rating)}");
-            var playersList = players.ToList();
-            
 
-            Console.WriteLine($"First RUS player: {players.FirstOrDefault(x=>x.Country == "RUS")}");
+            Console.WriteLine($"The lowest rating in top 10 is {players.Min(x => x.Rating)}");
+            var playersList = players.ToList();
+
+
+            Console.WriteLine($"First RUS player: {players.FirstOrDefault(x => x.Country == "RUS")}");
         }
 
-        private static void DisplayLargestFilesLinq(string pathToDir) 
+        private static void PrintChessPlayers()
+        {
+            List<ChessPlayer> players = RusChessPlayersSorted(@"ChessPlayer\Top100ChessPlayers.csv");
+            foreach (var player in players)
+            {
+                Console.WriteLine($"{player} BirthDate: {player.BirthYear}");
+            }
+
+        }
+        private static List<ChessPlayer> RusChessPlayersSorted(string file)
+        {
+            //найти всех игроков из России и отсортировать их по году рождения по возрастанию.
+            return File.ReadAllLines(file)
+                .Skip(1)
+                .Select(x => ChessPlayer.ParseCsvLine(x))
+                .Where(x => x.Country == "RUS")
+                .OrderBy(x => x.BirthYear)
+                .ToList();
+        }
+
+
+        private static void DisplayLargestFilesLinq(string pathToDir)
         {
             IEnumerable<FileInfo> topFivefiles = new DirectoryInfo(pathToDir)
                 .GetFiles()
@@ -62,7 +85,7 @@ namespace Section09_DelegatesLINQ
                 Console.WriteLine($"{file.Name} size is {file.Length} bytes");
             }
             Console.WriteLine("-------------------- Extention:");
-            
+
             topFivefiles
                 .ForEach(file => Console.WriteLine($"{file.Name} size is {file.Length} bytes"));
         }
