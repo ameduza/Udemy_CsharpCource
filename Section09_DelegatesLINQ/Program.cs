@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+
 namespace Section09_DelegatesLINQ
 {
     public static class LinqExt
@@ -22,13 +23,31 @@ namespace Section09_DelegatesLINQ
 
         static void Main(string[] args)
         {
-            DisplayLargestFilesLinq(@"C:\Distribs");
-            Console.WriteLine("--------------------");
-            DisplayLargestFilesNoLinq(@"C:\Distribs");
+            LinqDemo(@"ChessPlayer\Top100ChessPlayers.csv");
+
+            //DisplayLargestFilesLinq(@"C:\Distribs");
+            //Console.WriteLine("--------------------");
+            //DisplayLargestFilesNoLinq(@"C:\Distribs");
             
             //SticksGameUI.SticksGame();
 
             //CarCall();
+        }
+
+        private static void LinqDemo(string filepath) 
+        {
+            IEnumerable<ChessPlayer> players = File.ReadAllLines(filepath)
+                                                .Skip(1)
+                                                .Select(x => ChessPlayer.ParseCsvLine(x))
+                                                .Where(x => x.BirthYear > 1988)
+                                                .Take(10)
+                                                .ToList();  // Greedy operator that kick off real calculation right now!
+            
+            Console.WriteLine($"The lowest rating in top 10 is {players.Min(x=>x.Rating)}");
+            var playersList = players.ToList();
+            
+
+            Console.WriteLine($"First RUS player: {players.FirstOrDefault(x=>x.Country == "RUS")}");
         }
 
         private static void DisplayLargestFilesLinq(string pathToDir) 
