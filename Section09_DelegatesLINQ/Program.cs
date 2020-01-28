@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-
 namespace Section09_DelegatesLINQ
 {
     public static class LinqExt
@@ -23,7 +22,9 @@ namespace Section09_DelegatesLINQ
 
         static void Main(string[] args)
         {
-            PrintChessPlayers();
+            CheatGameUI();
+
+            //PrintChessPlayers();
 
             //LinqDemo(@"ChessPlayer\Top100ChessPlayers.csv");
 
@@ -34,6 +35,31 @@ namespace Section09_DelegatesLINQ
             //SticksGameUI.SticksGame();
 
             //CarCall();
+        }
+
+        private static void CheatGameUI()
+        {
+            var game = new CheatGame(maxNumberOfMistakes: 2, questionsFile: @"CheatGame\Questions.csv");
+            game.EndOfGameEvent += CheatGame_EndOfGameEvent;
+            game.WrongAnswerEvent += (explanation) =>
+                { 
+                    Console.WriteLine($"Sorry, you wrong. Correct answer is: {explanation}");
+                    Console.WriteLine();
+                };
+
+            game.Start();
+            Console.WriteLine("Welcome to the Cheat Game");
+            while (game.GameStatus == GameStatusEnum.InProgress)
+            {
+                Console.WriteLine($"Do you believe inthe next question? (Type y/n): {game.GetNextQuestion()}");
+                game.ValidateAnswer(Console.ReadLine() == "y");
+            };
+        }
+
+        private static void CheatGame_EndOfGameEvent(object sender, CheatGameEventArg e)
+        {
+            Console.WriteLine($"Game is over! Question asked count: {e.MessageCount}");
+            Console.WriteLine(e.IsWin ? "You won!" : "You lost!");
         }
 
         private static void LinqDemo(string filepath)
